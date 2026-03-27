@@ -18,6 +18,7 @@ The goal is to make learning math fun, visual, and engaging - especially for beg
 * 🏆 Reward system (Sun & Moon tracking)
 * 🎯 Immediate feedback on answers
 * 🕹️ Simple controls and user-friendly experience
+* 🤔 Difficulty levels (Easy, Medium, Hard)
 
 
 ## 🧠 Learning Objectives
@@ -86,44 +87,38 @@ python space_math.py
 ```
 math-in-space/
 │
-├── main.py              # Entry point of the game
-├── game_logic.py        # Handles question generation and scoring
-├── graphics.py         # Turtle drawing functions
-├── assets/             # Images (sun.gif, moon.gif, space background)
+├── space_math.py       # Module containing game logic
+├── LICENSE             # MIT License
+├── .gitignore          # Ignore certain files and directories
+├── images/             # Images (sun moon, space background)
 └── README.md           # Project documentation
 ```
 
----
 
 ## 🖼️ Assets
 
 Make sure the following files exist in your project directory:
 
 * `sun.gif`
-* `moon.gif`
-* Any background images used
+* `crescent_moon.gif`
+* `space.gif`
 
 ⚠️ Turtle requires `.gif` format for images.
 
----
 
 ## ⚠️ Known Issues
 
-* `PhotoImage` errors may occur if image formats are incorrect.
 * Screen may freeze if input handling is not managed properly.
 * Some fonts may not render consistently across systems.
 
----
 
 ## 🔧 Future Improvements
 
-* Add difficulty levels (Easy, Medium, Hard)
 * Include more math topics (fractions, algebra)
 * Add sound effects and animations
 * Timer-based challenges
 * Leaderboard or score saving
 
----
 
 ## 🤝 Contributing
 
@@ -134,30 +129,26 @@ Contributions are welcome!
 3. Commit your changes
 4. Push and open a Pull Request
 
----
 
 ## 📜 License
 
 This project is open source and available under the MIT License.
 
----
 
 ## 👨‍💻 Author
 
-Created by **[Your Name]**
+Created by **Uchenna Adubasim**
 Feel free to connect or give feedback!
 
----
 
 ## 🌟 Acknowledgements
 
 * Python Turtle documentation
 * Educators promoting fun learning through games
 
----
 
 ## 🚀 Final Note
 
-Math doesn’t have to be boring—explore space, earn suns, and conquer numbers!
+Math doesn’t have to be boring. Explore space, earn suns, and conquer numbers!
 
 Happy coding & learning 🌌
