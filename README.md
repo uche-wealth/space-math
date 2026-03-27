@@ -18,7 +18,7 @@ The goal is to make learning math fun, visual, and engaging - especially for beg
 * 🏆 Reward system (Sun & Moon tracking)
 * 🎯 Immediate feedback on answers
 * 🕹️ Simple controls and user-friendly experience
-* 🤔 Difficulty levels (Easy, Medium, Hard)
+* 🤔 Difficulty levels (Easy, Medium, Hard, Pro)
 
 
 ## 🧠 Learning Objectives
