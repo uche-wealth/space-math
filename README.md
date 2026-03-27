@@ -41,8 +41,8 @@ This game helps users:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/math-in-space.git
-cd math-in-space
+git clone https://github.com/uche-wealth/space-math.git
+cd space_math
 ```
 
 ### 2. Ensure Python is Installed
@@ -139,6 +139,7 @@ This project is open source and available under the MIT License.
 
 Created by **Uchenna Adubasim**
 Feel free to connect or give feedback!
+📧 journpy@gmail.com
 
 
 ## 🌟 Acknowledgements

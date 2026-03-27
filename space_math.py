@@ -9,7 +9,7 @@ LENGTH, WIDTH = 800, 700
 screen.setup(LENGTH, WIDTH)
 screen.colormode(255)
 screen.bgcolor(0, 0, 0)
-screen.title('Sun or Moon Game')
+screen.title('Space Math Game')
 bg_img = "images\\space.gif"
 sun_img = 'images\\sun.gif'
 moon_img = 'images\\crescent_moon.png'
@@ -21,7 +21,6 @@ screen.colormode(255)
 pen = turtle.Turtle()
 pen.pencolor('yellow')
 pen.pensize(2)
-
 # font
 font_name = 'Pacifico'
 font_size = 50
