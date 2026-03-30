@@ -1,7 +1,7 @@
 import turtle
 import random
 import time
-
+from stars import draw_left_stars, draw_right_stars
 
 # screen
 screen = turtle.Screen()
@@ -9,7 +9,8 @@ LENGTH, WIDTH = 800, 700
 screen.setup(LENGTH, WIDTH)
 screen.colormode(255)
 screen.bgcolor(0, 0, 0)
-screen.title('Space Math Game')
+title = 'Space Math'
+screen.title(title)
 bg_img = "images\\space.gif"
 sun_img = 'images\\sun.gif'
 moon_img = 'images\\crescent_moon.png'
@@ -17,25 +18,44 @@ screen.bgpic(bg_img)
 screen.register_shape(name='sun', shape=sun_img)
 screen.register_shape(name='moon', shape=moon_img)
 screen.colormode(255)
+
 # pen
 pen = turtle.Turtle()
 pen.pencolor('yellow')
 pen.pensize(2)
+pen.speed(0)
+pen.ht()
+
 # font
 font_name = 'Pacifico'
 font_size = 50
 font_type = 'italic'
+
 correct_answer = suns = moons = 0   # initialise variables
+
+
+def move_pen(x, y):
+    """Move turtle to specified location"""
+    pen.pu()
+    pen.goto(x, y)
+    pen.pd()
+
+# write title
+move_pen(0, 300)
+pen.write(title, align='center', font=(font_name, font_size-15, font_type))
+# Draw stars
+draw_left_stars()
+draw_right_stars()
 
 # keep this here so it doesn't repeat in the loop for every question
 game_mode = screen.textinput(
-        "Choose Level of Difficulty",
-        "Enter '1' for easy, '2' for medium, '3' for hard or '4' for pro")
-
+    "Choose Level of Difficulty",
+    "Enter '1' for easy, '2' for medium, '3' for hard or '4' for pro")
 
 def check_game_mode():
     """Difficulty level of the game"""
     min = max = 0
+    
     match game_mode:
         case '1':
             min, max = 0, 9
@@ -58,16 +78,10 @@ def operation():
     number_2 = random.randint(1, max)
     return number_1, operator, number_2, operators
 
-def move_pen(x, y):
-    """Move turtle to specified location"""
-    pen.pu()
-    pen.goto(x, y)
-    pen.pd()
-
 def show_message():
     """Display the title message"""
     msg = "Get a sun 🌞 for correct answers or a moon 🌛 for incorrect answers"
-    move_pen(LENGTH-800, WIDTH-400)
+    move_pen(LENGTH-800, WIDTH-450)
     for _ in range(1):
         r = random.randint(200, 255)
         g = random.randint(200, 255)
@@ -76,8 +90,6 @@ def show_message():
         pen.write(msg, align='center', font=('Arial', 12, 'italic'))
         time.sleep(2)
         pen.clear()
-        
-
 
 def question_and_answer():
     """Return correct answer and user answer"""
@@ -144,11 +156,12 @@ def mark_answer():
     return suns, moons
 
 
+
 if __name__ == '__main__':
     game_over = False
     no_of_questions = 0
     while not game_over:
-        pen.ht()
+        #pen.ht()
         show_message()
         suns, moons = mark_answer()
         no_of_questions += 1
