@@ -1,8 +1,13 @@
 import turtle
 import random
 import time
+import logging
+import winsound
+from pygame import mixer
 from stars import draw_left_stars, draw_right_stars
 
+
+logging.basicConfig(level=logging.INFO)
 # screen
 screen = turtle.Screen()
 LENGTH, WIDTH = 800, 700
@@ -11,10 +16,11 @@ screen.colormode(255)
 screen.bgcolor(0, 0, 0)
 title = 'Space Math'
 screen.title(title)
-bg_img = "images\\space.gif"
-sun_img = 'images\\sun.gif'
-moon_img = 'images\\crescent_moon.png'
+bg_img = r"images\space.gif"
+sun_img = r'images\sun.gif'
+moon_img = r'images\crescent_moon.png'
 screen.bgpic(bg_img)
+logging.info(f"Background image added {bg_img}")
 screen.register_shape(name='sun', shape=sun_img)
 screen.register_shape(name='moon', shape=moon_img)
 screen.colormode(255)
@@ -31,8 +37,15 @@ font_name = 'Pacifico'
 font_size = 50
 font_type = 'italic'
 
-correct_answer = suns = moons = 0   # initialise variables
-
+correct_answer = 0
+suns = 0
+moons = 0   # initialise variables
+# background music
+bg_audio = r'audio\freesound_community-space-adventure-29296.mp3'
+mixer.init()
+mixer.music.load(bg_audio)
+mixer.music.play(loops=-1)
+logging.info(f"Background music playing {bg_audio}")
 
 def move_pen(x, y):
     """Move turtle to specified location"""
@@ -44,9 +57,12 @@ def move_pen(x, y):
 move_pen(0, 300)
 pen.write(title, align='center', font=(font_name, font_size-15, font_type))
 # Draw stars
+screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
+logging.info('Animation turned off')
 draw_left_stars()
 draw_right_stars()
-
+screen.tracer(1) # turn on animation
+logging.info('Animation turned back on')
 # keep this here so it doesn't repeat in the loop for every question
 game_mode = screen.textinput(
     "Choose Level of Difficulty",
@@ -126,25 +142,27 @@ def mark_answer():
     move_pen(0, -200)
     if user_answer is not None:
         if user_answer == correct_answer:
+            right_turtle = turtle.Turtle()
+            right_turtle.shape('sun')
             pen.pencolor('green')
             pen.write(
                 f'You got a sun! {user_answer} is correct', 
                 align='center', 
                 font=('Arial', 20, 'bold'))
-            right_turtle = turtle.Turtle()
-            right_turtle.shape('sun')
+            winsound.Beep(32767, 200)
             for _ in range(10):
                 right_turtle.st()
                 time.sleep(0.1)
                 right_turtle.ht()     
             suns += 1
         else:
+            wrong_turtle = turtle.Turtle()
+            wrong_turtle.shape('moon')
             pen.pencolor('red')
             pen.write(
                 f'You got a moon! {user_answer} is incorrect', 
-                align='center', font=('Arial', 20, 'bold'))
-            wrong_turtle = turtle.Turtle()
-            wrong_turtle.shape('moon')
+                align='center', font=('Arial', 20, 'bold'))  
+            winsound.Beep(1000, 200)
             for _ in range(10):
                 wrong_turtle.st()
                 time.sleep(0.1)
@@ -155,13 +173,21 @@ def mark_answer():
     print(f'user answer {user_answer}')
     return suns, moons
 
+def game_over_func():
+    """Game over"""
+    move_pen(0, 0)
+    pen.pencolor('red')
+    end_msg = 'Game Over'
+    print(end_msg)
+    pen.write(end_msg, align='center', font=(font_name, font_size, font_type))
 
 
 if __name__ == '__main__':
     game_over = False
     no_of_questions = 0
-    while not game_over:
-        #pen.ht()
+    no_of_tries = 3
+    exit_duration = 5
+    while not game_over and no_of_questions < no_of_tries:
         show_message()
         suns, moons = mark_answer()
         no_of_questions += 1
@@ -179,7 +205,11 @@ if __name__ == '__main__':
         print(f'suns {suns}')
         print(f'moons {moons}')
         print("Total number of questions: %s" % no_of_questions)
-        #screen.mainloop()
+    else:
+        game_over_func()
+        logging.info("Game Over... Exiting in %s seconds" % exit_duration)
+    #screen.mainloop()
+    time.sleep(exit_duration)   # sleep and exit afterwards
 
 
 
