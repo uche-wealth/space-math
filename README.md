@@ -33,7 +33,10 @@ This game helps users:
 ## 🛠️ Technologies Used
 
 * **Python 3**
-* **Turtle Graphics Module**
+* **Turtle Graphics Module*
+* **Pygame for background music*
+* **Winsound for beeps*
+
 
 
 ## 📦 Installation
@@ -53,7 +56,7 @@ Check your Python version:
 python --version
 ```
 
-Python 3.x is required.
+Python 3.14 is required for best experience.
 
 ### 3. Run the Game
 
@@ -79,7 +82,7 @@ python space_math.py
 
 * Questions are randomly generated each round.
 * Score is tracked visually using icons (Sun/Moon).
-* Game continues until a user exits.
+* Game continues until after a set number of questions.
 
 
 ## 📁 Project Structure
@@ -88,8 +91,10 @@ python space_math.py
 math-in-space/
 │
 ├── space_math.py       # Module containing game logic
+├── stars.py            # Functions for drawing stars
 ├── LICENSE             # MIT License
 ├── .gitignore          # Ignore certain files and directories
+├── audio/              # Audio files for background music
 ├── images/             # Images (sun moon, space background)
 └── README.md           # Project documentation
 ```

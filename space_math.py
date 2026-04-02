@@ -44,7 +44,7 @@ moons = 0   # initialise variables
 bg_audio = r'audio\freesound_community-space-adventure-29296.mp3'
 mixer.init()
 mixer.music.load(bg_audio)
-mixer.music.play(loops=-1)
+mixer.music.play(loops=-1)  # Play the music (-1 means loop forever)
 logging.info(f"Background music playing {bg_audio}")
 
 def move_pen(x, y):
@@ -64,7 +64,7 @@ draw_right_stars()
 screen.tracer(1) # turn on animation
 logging.info('Animation turned back on')
 # keep this here so it doesn't repeat in the loop for every question
-game_mode = screen.textinput(
+game_mode = screen.numinput(
     "Choose Level of Difficulty",
     "Enter '1' for easy, '2' for medium, '3' for hard or '4' for pro")
 
@@ -72,17 +72,24 @@ def check_game_mode():
     """Difficulty level of the game"""
     min = max = 0
     
-    match game_mode:
-        case '1':
+    match int(game_mode):
+        case 1:
             min, max = 0, 9
-        case '2':
+        case 2:
             min, max = 10, 99
-        case '3':
+        case 3:
             min, max = 100, 999
-        case '4':
+        case 4:
             min, max = 1000, 9999
         case _:
             print("We didn't understand what you entered")
+    logging.info(
+        "Level %d set with min value %d and max value %d" % (
+            int(game_mode), 
+            min, 
+            max
+            )
+        )
     return min, max
 
 def operation():
@@ -121,7 +128,11 @@ def question_and_answer():
     pen.write("=", align='center', font=(font_name, font_size, font_type))
     print('Question:', number_1, operator, number_2)
     user_answer = screen.numinput(
-        "Answer", "Enter the correct answer (for division: to 2 decimal place): "
+        "Answer", 
+        """
+        Enter the correct answer 
+        (Approximate division questions to 2 decimal places): 
+        """
         )
     if operator == '+':
         correct_answer = number_1 + number_2
@@ -185,9 +196,11 @@ def game_over_func():
 if __name__ == '__main__':
     game_over = False
     no_of_questions = 0
-    no_of_tries = 3
+    no_of_tries = screen.numinput(
+        "Number of questions", 
+        "Enter the number of questions you would like to answer")
     exit_duration = 5
-    while not game_over and no_of_questions < no_of_tries:
+    while not game_over and no_of_questions < int(no_of_tries):
         show_message()
         suns, moons = mark_answer()
         no_of_questions += 1
