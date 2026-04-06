@@ -3,11 +3,21 @@ import random
 import time
 import logging
 import winsound
+import os
+import sys
 from pygame import mixer
 from stars import draw_left_stars, draw_right_stars
 
-
 logging.basicConfig(level=logging.INFO)
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        base_path = sys._MEIPASS  # PyInstaller temp folder
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 # screen
 screen = turtle.Screen()
 LENGTH, WIDTH = 800, 700
@@ -16,9 +26,9 @@ screen.colormode(255)
 screen.bgcolor(0, 0, 0)
 title = 'Space Math'
 screen.title(title)
-bg_img = r"images\space.gif"
-sun_img = r'images\sun.gif'
-moon_img = r'images\crescent_moon.png'
+bg_img = resource_path(r"assets\images\space.gif")
+sun_img = resource_path(r'assets\images\sun.gif')
+moon_img = resource_path(r'assets\images\crescent_moon.png')
 screen.bgpic(bg_img)
 logging.info(f"Background image added {bg_img}")
 screen.register_shape(name='sun', shape=sun_img)
@@ -41,7 +51,7 @@ correct_answer = 0
 suns = 0
 moons = 0   # initialise variables
 # background music
-bg_audio = r'audio\freesound_community-space-adventure-29296.mp3'
+bg_audio = resource_path(r'assets\audio\freesound_community-space-adventure-29296.mp3')
 mixer.init()
 mixer.music.load(bg_audio)
 mixer.music.play(loops=-1)  # Play the music (-1 means loop forever)
@@ -199,7 +209,7 @@ if __name__ == '__main__':
     no_of_tries = screen.numinput(
         "Number of questions", 
         "Enter the number of questions you would like to answer")
-    exit_duration = 5
+    exit_duration = 7
     while not game_over and no_of_questions < int(no_of_tries):
         show_message()
         suns, moons = mark_answer()
