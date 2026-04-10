@@ -3,24 +3,15 @@ import random
 import time
 import logging
 import winsound
-import os
-import sys
-from pygame import mixer
+from helpers import resource_path, space_audio
 from stars import draw_left_stars, draw_right_stars
+
 
 logging.basicConfig(level=logging.INFO)
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        base_path = sys._MEIPASS  # PyInstaller temp folder
-    except AttributeError:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 # screen
 screen = turtle.Screen()
-LENGTH, WIDTH = 800, 700
+LENGTH, WIDTH = 1000, 900
 screen.setup(LENGTH, WIDTH)
 screen.colormode(255)
 screen.bgcolor(0, 0, 0)
@@ -29,10 +20,12 @@ screen.title(title)
 bg_img = resource_path(r"assets\images\space.gif")
 sun_img = resource_path(r'assets\images\sun.gif')
 moon_img = resource_path(r'assets\images\crescent_moon.png')
+rocket_img = resource_path(r'assets\images\placidplace-rocket-12320_512.gif')
 screen.bgpic(bg_img)
 logging.info(f"Background image added {bg_img}")
 screen.register_shape(name='sun', shape=sun_img)
 screen.register_shape(name='moon', shape=moon_img)
+screen.register_shape(name='rocket', shape=rocket_img)
 screen.colormode(255)
 
 # pen
@@ -41,21 +34,16 @@ pen.pencolor('yellow')
 pen.pensize(2)
 pen.speed(0)
 pen.ht()
-
+# rocket
+rocket = turtle.Turtle()
 # font
 font_name = 'Pacifico'
 font_size = 50
 font_type = 'italic'
 
 correct_answer = 0
-suns = 0
-moons = 0   # initialise variables
-# background music
-bg_audio = resource_path(r'assets\audio\freesound_community-space-adventure-29296.mp3')
-mixer.init()
-mixer.music.load(bg_audio)
-mixer.music.play(loops=-1)  # Play the music (-1 means loop forever)
-logging.info(f"Background music playing {bg_audio}")
+suns = moons = 0   # initialise variables
+
 
 def move_pen(x, y):
     """Move turtle to specified location"""
@@ -63,21 +51,27 @@ def move_pen(x, y):
     pen.goto(x, y)
     pen.pd()
 
-# write title
-move_pen(0, 300)
-pen.write(title, align='center', font=(font_name, font_size-15, font_type))
-# Draw stars
-screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
-logging.info('Animation turned off')
-draw_left_stars()
-draw_right_stars()
-screen.tracer(1) # turn on animation
-logging.info('Animation turned back on')
-# keep this here so it doesn't repeat in the loop for every question
+def setUp():
+    space_audio()   # background music
+    # write title
+    move_pen(0, 200)
+    pen.write(title, align='center', font=(font_name, font_size+20, font_type))
+    # Draw stars
+    screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
+    logging.info('Animation turned off')
+    draw_left_stars()
+    draw_right_stars()
+    screen.tracer(1) # turn on animation
+    logging.info('Animation turned back on')
+
+
+# keep this here so it doesn't repeat in the loop for every question ##########
+setUp()
 game_mode = screen.numinput(
     "Choose Level of Difficulty",
     "Enter '1' for easy, '2' for medium, '3' for hard or '4' for pro")
-
+###############################################################################
+    
 def check_game_mode():
     """Difficulty level of the game"""
     min = max = 0
@@ -92,7 +86,8 @@ def check_game_mode():
         case 4:
             min, max = 1000, 9999
         case _:
-            print("We didn't understand what you entered")
+            logging.error("""We didn't understand what you entered. 
+                             You can only choose levels 1-4""")
     logging.info(
         "Level %d set with min value %d and max value %d" % (
             int(game_mode), 
@@ -105,16 +100,43 @@ def check_game_mode():
 def operation():
     """Return the chosen math operation"""
     min, max = check_game_mode()
-    operators = ['+', '-', '*', '/']
+    operators = ['+', '-', '*', '/', '^']
     number_1 = random.randint(min, max)
     operator = random.choice(operators)
     number_2 = random.randint(1, max)
     return number_1, operator, number_2, operators
 
+def rocket_func():
+    """Animated rocket"""
+    rocket.shape('rocket')
+    rocket.speed(3)
+    rocket.pu()
+    rocket.goto(0, -400)
+    rocket.seth(90)
+    rocket.fd(1000)
+    rocket.ht()   
+
+def countdown():
+    """Countdown to start playing"""
+    move_pen(0, 0)
+    pen.pencolor('orange')
+    pen.write('③', align='center', font=('Arial', font_size, 'italic'))
+    time.sleep(1)
+    pen.clear()
+    pen.write('②', align='center', font=('Arial', font_size, 'italic'))
+    time.sleep(1)
+    pen.clear()
+    pen.write('①', align='center', font=('Arial', font_size, 'italic'))
+    time.sleep(1)
+    pen.clear()
+    pen.write('Go!', align='center', font=('Arial', font_size, 'italic'))
+    time.sleep(1)
+    pen.clear()
+
 def show_message():
     """Display the title message"""
-    msg = "Get a sun 🌞 for correct answers or a moon 🌛 for incorrect answers"
-    move_pen(LENGTH-800, WIDTH-450)
+    msg = "Get a Sun or a Moon"
+    move_pen(0, 400)
     for _ in range(1):
         r = random.randint(200, 255)
         g = random.randint(200, 255)
@@ -152,6 +174,8 @@ def question_and_answer():
         correct_answer = number_1 * number_2
     elif operator == '/':
         correct_answer = round((number_1 / number_2), 2)
+    elif operator == '^':
+        correct_answer = number_1 ** number_2
     else:
         pass
     return correct_answer, user_answer
@@ -165,13 +189,14 @@ def mark_answer():
         if user_answer == correct_answer:
             right_turtle = turtle.Turtle()
             right_turtle.shape('sun')
+            right_turtle.speed(0)
             pen.pencolor('green')
             pen.write(
                 f'You got a sun! {user_answer} is correct', 
                 align='center', 
                 font=('Arial', 20, 'bold'))
             winsound.Beep(32767, 200)
-            for _ in range(10):
+            for _ in range(5):
                 right_turtle.st()
                 time.sleep(0.1)
                 right_turtle.ht()     
@@ -179,27 +204,44 @@ def mark_answer():
         else:
             wrong_turtle = turtle.Turtle()
             wrong_turtle.shape('moon')
+            wrong_turtle.speed(0)
             pen.pencolor('red')
             pen.write(
                 f'You got a moon! {user_answer} is incorrect', 
                 align='center', font=('Arial', 20, 'bold'))  
             winsound.Beep(1000, 200)
-            for _ in range(10):
+            for _ in range(5):
                 wrong_turtle.st()
                 time.sleep(0.1)
                 wrong_turtle.ht()
             moons += 1
-
-    print(f'correct answer {correct_answer}')
-    print(f'user answer {user_answer}')
+    logging.info(f'correct answer {correct_answer}')
+    logging.info(f'user answer {user_answer}')
     return suns, moons
+
+def analytics():
+    move_pen(-200, -400)
+    pen.pencolor('yellow')
+    pen.write(
+        f"{suns} ☀️", align='center', font=('Comic Sans MS', 30, 'bold')
+        )
+    move_pen(0, -400)
+    pen.pencolor('white')
+    pen.write(
+        f"{moons} 🌙", 
+        align='center', font=('Comic Sans MS', 30, 'bold'))
+    move_pen(200, -400)
+    pen.pencolor('orange')
+    pen.write(
+        f"{int(no_of_tries)-int(no_of_questions)} left", 
+        align='center', font=('Comic Sans MS', 30, 'italic'))
 
 def game_over_func():
     """Game over"""
     move_pen(0, 0)
     pen.pencolor('red')
     end_msg = 'Game Over'
-    print(end_msg)
+    logging.info(end_msg)
     pen.write(end_msg, align='center', font=(font_name, font_size, font_type))
 
 
@@ -209,30 +251,25 @@ if __name__ == '__main__':
     no_of_tries = screen.numinput(
         "Number of questions", 
         "Enter the number of questions you would like to answer")
-    exit_duration = 7
+    #exit_duration = 20
+    countdown()
+    rocket_func()
     while not game_over and no_of_questions < int(no_of_tries):
         show_message()
         suns, moons = mark_answer()
         no_of_questions += 1
         pen.clear()
-        move_pen(-100, -200)
-        pen.pencolor('yellow')
-        pen.write(
-            f"{suns} ☀️", align='center', font=('Comic Sans MS', 20, 'bold')
-            )
-        move_pen(100, -200)
-        pen.pencolor('white')
-        pen.write(
-            f"{moons} 🌙", 
-            align='center', font=('Comic Sans MS', 20, 'bold'))
-        print(f'suns {suns}')
-        print(f'moons {moons}')
-        print("Total number of questions: %s" % no_of_questions)
+        analytics()
     else:
+        pen.clear()
         game_over_func()
-        logging.info("Game Over... Exiting in %s seconds" % exit_duration)
-    #screen.mainloop()
-    time.sleep(exit_duration)   # sleep and exit afterwards
+    
+    analytics()
+    # loggings
+    logging.info(f'suns {suns}')
+    logging.info(f'moons {moons}')
+    logging.info("Total number of questions: %s" % no_of_questions)
+    screen.mainloop()
 
 
 
