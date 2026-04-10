@@ -3,22 +3,12 @@ import random
 import time
 import logging
 import winsound
-import os
-import sys
-from pygame import mixer
+from helpers import resource_path, space_audio
 from stars import draw_left_stars, draw_right_stars
 
 
 logging.basicConfig(level=logging.INFO)
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        base_path = sys._MEIPASS  # PyInstaller temp folder
-    except AttributeError:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 # screen
 screen = turtle.Screen()
 LENGTH, WIDTH = 1000, 900
@@ -52,14 +42,8 @@ font_size = 50
 font_type = 'italic'
 
 correct_answer = 0
-suns = 0
-moons = 0   # initialise variables
-# background music
-bg_audio = resource_path(r'assets\audio\freesound_community-space-adventure-29296.mp3')
-mixer.init()
-mixer.music.load(bg_audio)
-mixer.music.play(loops=-1)  # Play the music (-1 means loop forever)
-logging.info(f"Background music playing {bg_audio}")
+suns = moons = 0   # initialise variables
+
 
 def move_pen(x, y):
     """Move turtle to specified location"""
@@ -67,21 +51,27 @@ def move_pen(x, y):
     pen.goto(x, y)
     pen.pd()
 
-# write title
-move_pen(0, 300)
-pen.write(title, align='center', font=(font_name, font_size-15, font_type))
-# Draw stars
-screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
-logging.info('Animation turned off')
-draw_left_stars()
-draw_right_stars()
-screen.tracer(1) # turn on animation
-logging.info('Animation turned back on')
-# keep this here so it doesn't repeat in the loop for every question
+def setUp():
+    space_audio()   # background music
+    # write title
+    move_pen(0, 200)
+    pen.write(title, align='center', font=(font_name, font_size+20, font_type))
+    # Draw stars
+    screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
+    logging.info('Animation turned off')
+    draw_left_stars()
+    draw_right_stars()
+    screen.tracer(1) # turn on animation
+    logging.info('Animation turned back on')
+
+
+# keep this here so it doesn't repeat in the loop for every question ##########
+setUp()
 game_mode = screen.numinput(
     "Choose Level of Difficulty",
     "Enter '1' for easy, '2' for medium, '3' for hard or '4' for pro")
-
+###############################################################################
+    
 def check_game_mode():
     """Difficulty level of the game"""
     min = max = 0
@@ -110,7 +100,7 @@ def check_game_mode():
 def operation():
     """Return the chosen math operation"""
     min, max = check_game_mode()
-    operators = ['+', '-', '*', '/']
+    operators = ['+', '-', '*', '/', '^']
     number_1 = random.randint(min, max)
     operator = random.choice(operators)
     number_2 = random.randint(1, max)
@@ -184,6 +174,8 @@ def question_and_answer():
         correct_answer = number_1 * number_2
     elif operator == '/':
         correct_answer = round((number_1 / number_2), 2)
+    elif operator == '^':
+        correct_answer = number_1 ** number_2
     else:
         pass
     return correct_answer, user_answer
