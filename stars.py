@@ -1,66 +1,68 @@
 import turtle
 
-pen = turtle.Turtle()
 
+class DrawStars:
+    """Draw Stars"""
+    def __init__(self):
+        self.pen = turtle.Turtle()
 
-def move_pen(x, y):
-    """Move turtle to specified location"""
-    pen.pu()
-    pen.goto(x, y)
-    pen.pd()
+    def __move_pen(self, x, y):
+        """Move turtle to specified location"""
+        self.pen.pu()
+        self.pen.goto(x, y)
+        self.pen.pd()
 
-def first_star(line=50):
-    """Draw first star"""
-    pen.begin_fill()
-    for _ in range(3):
-        pen.fd(line)
-        pen.lt(120)
-    pen.end_fill()
+    def __first_star(self, line=50):
+        """Draw first star"""
+        self.pen.begin_fill()
+        for _ in range(3):
+            self.pen.fd(line)
+            self.pen.lt(120)
+        self.pen.end_fill()
 
-def second_star(line=50):
-    """Draw second star"""
-    pen.begin_fill()
-    for _ in range(3):
-        pen.fd(line)
-        pen.rt(120)
-    pen.end_fill()
+    def __second_star(self, line=50):
+        """Draw second star"""
+        self.pen.begin_fill()
+        for _ in range(3):
+            self.pen.fd(line)
+            self.pen.rt(120)
+        self.pen.end_fill()
 
-def star_pen_attrs():
-    """Set attributes for pen drawing stars"""
-    pen.color('white')
-    pen.ht()
-    pen.speed(0)
+    def __star_pen_attrs(self):
+        """Set attributes for pen drawing stars"""
+        self.pen.color('white')
+        self.pen.ht()
+        self.pen.speed(0)
 
+    def _draw_left_stars(self):
+        """Draw stars on the Left side."""
+        self.__star_pen_attrs()
+        self.__move_pen(-350, 0)
+        self.__first_star()
+        self.__move_pen(-350, 30)
+        self.__second_star()
+        self.__move_pen(-350, -200)
+        self.__first_star()
+        self.__move_pen(-350, -170)
+        self.__second_star()
+        self.__move_pen(-350, 200)
+        self.__first_star()
+        self.__move_pen(-350, 230)
+        self.__second_star()
 
-def draw_left_stars():
-    """Draw stars on the Left side."""
-    star_pen_attrs()
-    move_pen(-350, 0)
-    first_star()
-    move_pen(-350, 30)
-    second_star()
-    move_pen(-350, -200)
-    first_star()
-    move_pen(-350, -170)
-    second_star()
-    move_pen(-350, 200)
-    first_star()
-    move_pen(-350, 230)
-    second_star()
-
-def draw_right_stars():
-    """Draw stars on the Right side"""
-    star_pen_attrs()
-    move_pen(350, 0)
-    first_star()
-    move_pen(350, 30)
-    second_star()
-    move_pen(350, -200)
-    first_star()
-    move_pen(350, -170)
-    second_star()
-    move_pen(350, 200)
-    first_star()
-    move_pen(350, 230)
-    second_star()
+    def _draw_right_stars(self):
+        """Draw stars on the Right side"""
+        self.__star_pen_attrs()
+        self.__move_pen(350, 0)
+        self.__first_star()
+        self.__move_pen(350, 30)
+        self.__second_star()
+        self.__move_pen(350, -200)
+        self.__first_star()
+        self.__move_pen(350, -170)
+        self.__second_star()
+        self.__move_pen(350, 200)
+        self.__first_star()
+        self.__move_pen(350, 230)
+        self.__second_star()
 

@@ -4,12 +4,13 @@ import time
 import logging
 import winsound
 import sys
-from helpers import resource_path, space_audio
-from stars import draw_left_stars, draw_right_stars
+from utils import Helpers
+from stars import DrawStars
 from tkinter import *
 from tkinter import messagebox
 
-
+helpers = Helpers()
+stars = DrawStars()
 # create logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -38,10 +39,10 @@ screen.colormode(255)
 screen.bgcolor(0, 0, 0)
 title = 'Space Math'
 screen.title(title)
-bg_img = resource_path(r"assets\images\space.gif")
-sun_img = resource_path(r'assets\images\sun.gif')
-moon_img = resource_path(r'assets\images\crescent_moon.png')
-rocket_img = resource_path(r'assets\images\placidplace-rocket-12320_512.gif')
+bg_img = helpers._resource_path(r"assets\images\space.gif")
+sun_img = helpers._resource_path(r'assets\images\sun.gif')
+moon_img = helpers._resource_path(r'assets\images\crescent_moon.png')
+rocket_img = helpers._resource_path(r'assets\images\placidplace-rocket-12320_512.gif')
 screen.bgpic(bg_img)
 logger.info(f"Background image added {bg_img}")
 screen.register_shape(name='sun', shape=sun_img)
@@ -72,15 +73,15 @@ def move_pen(x, y):
     pen.pd()
 
 def setUp():
-    space_audio()   # background music
+    helpers._space_audio()   # background music
     # write title
     move_pen(0, 200)
     pen.write(title, align='center', font=(font_name, font_size+20, font_type))
     # Draw stars
     screen.tracer(0)    # turn off animation so stars appear at once instead of drawing each star 
     logger.info('Animation turned off')
-    draw_left_stars()
-    draw_right_stars()
+    stars._draw_left_stars()
+    stars._draw_right_stars()
     logger.info("Stars drawn")
     screen.tracer(1) # turn on animation
     logger.info('Animation turned back on')
