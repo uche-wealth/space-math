@@ -92,6 +92,7 @@ math-in-space/
 │
 ├── space_math.py       # Module containing game logic
 ├── stars.py            # Functions for drawing stars
+├── helpers.py          # Helper functions
 ├── LICENSE             # MIT License
 ├── .gitignore          # Ignore certain files and directories
 ├── audio/              # Audio files for background music
